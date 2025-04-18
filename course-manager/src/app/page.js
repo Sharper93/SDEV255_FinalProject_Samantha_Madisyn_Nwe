@@ -13,14 +13,18 @@ export default function Home() {
       {/* A heading with padding, text color, 2xl size, and italic font style */}
       <h1 className="p-4 text-gray-700 text-2xl font-italic">Welcome to Course Manager</h1>
       {/* A paragraph describing the application's purpose */}
-      <p>Effortlessly manage college courses upon login</p>
+      <p className="p-3">Effortlessly manage your academic journey with Course Manager. 
+        Teachers can log in to update or modify their courses, while students can 
+        organize their schedules and explore a comprehensive list of available courses—all 
+        in one convenient platform.</p>
 
       {/* A div containing buttons with top margin */}
       <div className="mt-4"> 
-        {/* Button for student login, styled with white text, blue background, rounded corners, padding, and margin */}
-        <button type="studentLogin" className="text-white bg-blue-600 rounded-md p-3 mx-2">Student Login</button>
-        {/* Button for professor login, styled similarly to the student login button */}
-        <button type="teacherLogin" className="text-white bg-blue-600 rounded-md p-3 mx-2">Professor Login</button>
+        {/* Button for account creation, styled with white text, blue background, rounded corners, padding, and margin */}
+        <button type="createAcc" 
+          className="text-primary font-bold bg-blue-200 p-3 my-2 border-2 border-transparent hover:border-blue-500">
+          Create an Account
+        </button>
       </div>
     </div>
   );
