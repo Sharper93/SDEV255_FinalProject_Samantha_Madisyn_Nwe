@@ -8,15 +8,19 @@ export default function Page() {
         <h1 className="text-gray-700 text-2xl font-bold">Welcome to Teacher Dashboard</h1>
         <p>Here you can modify and manage your courses.</p>
 
-        <button type="viewYourCourses" 
-          className="text-primary font-bold bg-blue-200 p-3 my-2 border-2 border-transparent hover:border-blue-500">
-          View Courses
-        </button> 
+        <Link href="./teacherViewCourses">
+            <button type="viewYourCourses" 
+            className="text-primary font-bold bg-blue-200 p-3 my-2 mx-4 border-2 border-transparent hover:border-blue-500">
+            View Courses
+            </button> 
+        </Link>
 
-        <button type="addCourse" 
-          className="text-primary font-bold bg-blue-200 p-3 my-2 border-2 border-transparent hover:border-blue-500">
-          Add Course
-        </button>
+        <Link href="./teacherAddCourse">
+            <button type="addCourse" 
+            className="text-primary font-bold bg-blue-200 p-3 my-2 mx-4 border-2 border-transparent hover:border-blue-500">
+            Add Course
+            </button>
+        </Link>
 
       </div>
     );
