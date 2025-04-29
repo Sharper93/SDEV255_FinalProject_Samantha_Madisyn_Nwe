@@ -5,6 +5,8 @@ import Image from "next/image";
 import Link from "next/link"; // added link import from next.js for navigation between pages
 // Import Bootstrap CSS for pre-defined styling
 import 'bootstrap/dist/css/bootstrap.min.css';
+  
+
 
 
 
