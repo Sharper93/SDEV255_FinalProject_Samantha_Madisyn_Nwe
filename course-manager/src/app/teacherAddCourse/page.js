@@ -2,6 +2,8 @@
 import React, { useState } from "react";
 import Link from "next/link";
 
+// attempting to push and pull branch to main
+
 export default function ViewCourses() {
     const [courseName, setCourseName] = useState("");
     const [courseCode, setCourseCode] = useState("");
