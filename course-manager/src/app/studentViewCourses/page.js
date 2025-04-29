@@ -12,14 +12,14 @@ export default function Page() {
                 COMING SOON!
             </p>
 
-            <Link href="/teacherDash">
+            <Link href="/studentDash">
                 <button type="button" 
                 className="text-primary font-bold bg-blue-200 p-3 my-2 border-2 border-transparent hover:border-blue-500">
                     Return to Dashboard
                 </button>
             </Link>
 
-            <Link href="./teacherAddCourse">
+            <Link href="./studentAddCourse">
                 <button type="button" 
                 className="text-primary font-bold bg-blue-200 p-3 my-2 mx-5 border-2 border-transparent hover:border-blue-500">
                     Add New Course
