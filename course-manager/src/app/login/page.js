@@ -17,7 +17,7 @@ export default function Page() {
 
         <button className="flex items-center">
           {/* TEMPORARY LINK to teacher page */}
-          <Link href="" className="text-primary font-bold bg-blue-200 p-3 my-2 border-2 border-transparent hover:border-blue-500">Student DashBoard</Link>
+          <Link href="./studentDash" className="text-primary font-bold bg-blue-200 p-3 my-2 border-2 border-transparent hover:border-blue-500">Student DashBoard</Link>
         </button>
 
         <button className="flex items-center">
