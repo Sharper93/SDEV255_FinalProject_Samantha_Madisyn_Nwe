@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 
 // attempting to push and pull branch to main
+// another comment to see if it works
 
 export default function ViewCourses() {
     const [courseName, setCourseName] = useState("");
