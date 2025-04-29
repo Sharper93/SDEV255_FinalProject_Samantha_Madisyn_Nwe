@@ -6,6 +6,8 @@ import Link from "next/link"; // added link import from next.js for navigation b
 // Import Bootstrap CSS for pre-defined styling
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+
+
 // Export the page component as the default export of this file
 export default function Page() {
     return (
