@@ -1,6 +1,7 @@
 // app/api/checkdb/route.js
 
-import { dbConnect } from '@/app/lib/db';
+// path to db connection
+import { dbConnect } from '../../../../lib/db';
 import { NextResponse } from 'next/server';
 
 export async function GET() {
