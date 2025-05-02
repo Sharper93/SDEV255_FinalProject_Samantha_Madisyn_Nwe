@@ -1,20 +1,44 @@
-// event listener to add courses when DOM is triggered
-// triggered when page is loaded 
+// event listner to load courses when page is rendered
+document.addEventListener("DOMContentLoaded", loadCourses);
 
-// all courses appear on all_courses.html page
+async function loadCourses() {
+  const courseList = document.getElementById("list-of-courses");
 
-document.addEventListener("DOMContentLoaded", async function() {
-    const response = await fetch("http://localhost:3000/api/all_courses");
-    const courses = await response.json();
+  try {
+    const res = await fetch("http://localhost:3000/api/all_courses");
+    const courses = await res.json();
 
-    let html = "";
-    for (let course of courses) {
-        let courseID = course._id
-        html += `<li>Course: ${course.name}  - Major: ${course.focuedMajor} - 
-        <a href="details.html?id=${courseID}">Course Details</a> - 
-        <a href="edit.html?id=${courseID}">Edit Course</a> - 
-        <a href="delete.html?id=${courseID}">Delete Course</a></li>`;
-    }
+    courseList.innerHTML = courses.map(course => `
+      <div class="col-md-4 mb-4">
+        <div class="card h-100 border border-success">
 
-    document.querySelector("#list-of-courses").innerHTML = html;
-});
+          <div class="card-body">
+            <h5 class="card-title text-success">${course.name}</h5>
+
+            <h6 class="card-subtitle mb-2 text-muted">Major: ${course.focusedMajor}</h6>
+
+            <p class="card-text">Instructor: ${course.instructor}</p>
+
+            <p class="card-text">Credits: ${course.credits}</p>
+
+            <button class="btn btn-outline-success mt-2" data-bs-toggle="modal" data-bs-target="#descModal"
+              onclick="showDescription('${course.name}', \`${course.description}\`)">
+              View Description
+            </button>
+            
+          </div>
+
+        </div>
+      </div>
+    `).join("");
+
+  } catch (err) {
+    console.error("Error fetching courses:", err);
+    courseList.innerHTML = `<p class="text-danger">Failed to load courses.</p>`;
+  }
+}
+
+function showDescription(name, description) {
+  document.getElementById("descModalLabel").textContent = name;
+  document.getElementById("descContent").textContent = description;
+}
