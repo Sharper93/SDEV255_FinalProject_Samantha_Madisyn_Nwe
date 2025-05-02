@@ -1,5 +1,7 @@
+//app.js ALL CRUD statements
+
 const express = require("express")
-const Song = require("./models/song")
+const Course = require("./models/course")
 var cors = require('cors')
 
 const app = express()
@@ -11,45 +13,45 @@ app.use(express.json())
 // route 
 const router = express.Router()
 
-// get all songs in db
-router.get("/songs", async(req, res) => {
+//get all courses in db
+router.get("/all_courses", async(req, res) => {
     try{
-        const songs = await Song.find({})
-        res.send(songs)
-        console.log(songs)
+        const courses = await Course.find({})
+        res.send(courses)
+        console.log(courses)
     }
     catch (err) {
         console.log(err)
     }
 })
 
-// grab single song from db
-router.get("/songs/:id", async (req,res) => {
+// grab single course from db
+router.get("/all_courses/:id", async (req,res) => {
     try {
-        const song = await Song.findById(req.params.id)
-        res.json(song)
+        const course = await Course.findById(req.params.id)
+        res.json(courses)
     }
     catch (err) {
         res.status(400).send(err)
     }
 })
 
-// POST REQ for adding songs to DB
-router.post("/songs", async (req, res) => {
+// POST REQ for adding course to DB
+router.post("/all_courses", async (req, res) => {
     try {
-        console.log("Incoming song data:", req.body)  // <== log this
+        console.log("Incoming course data:", req.body)  // <== log this
 
-        const song = new Song(req.body)
-        await song.save()
-        res.status(201).json(song)
-        console.log("Saved song:", song)
+        const course = new Course(req.body)
+        await course.save()
+        res.status(201).json(course)
+        console.log("Saved course:", course)
     } catch (err) {
-        console.error("Error saving song:", err)  // <== log the error
+        console.error("Error saving course:", err)  // <== log the error
         res.status(400).send({ error: err.message })
     }
 })
 
-router.put("/songs/:id", async (req, res) => {
+/* router.put("/songs/:id", async (req, res) => {
     // first find the song and update the song the front end wants us to update
     // need to request the id of the song from request
     // and the find it in the database and update it
@@ -78,7 +80,7 @@ router.delete("/songs/:id", async (req, res) => {
         res.status(400).send({ error: err.message });
     }
 });
-
+*/
 app.use("/api", router)
 console.log("Server is running on port 3000")
 app.listen(3000)
