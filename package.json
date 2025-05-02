@@ -1,0 +1,23 @@
+{
+  "name": "sdev255-final-project",
+  "version": "1.0.0",
+  "description": "Course Manager",
+  "homepage": "https://github.com/Sharper93/SDEV255_FinalProject_Samantha_Madisyn_Nwe#readme",
+  "bugs": {
+    "url": "https://github.com/Sharper93/SDEV255_FinalProject_Samantha_Madisyn_Nwe/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sharper93/SDEV255_FinalProject_Samantha_Madisyn_Nwe.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
