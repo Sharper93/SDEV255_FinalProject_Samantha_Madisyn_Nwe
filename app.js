@@ -51,14 +51,14 @@ router.post("/all_courses", async (req, res) => {
     }
 })
 
-/* router.put("/songs/:id", async (req, res) => {
-    // first find the song and update the song the front end wants us to update
-    // need to request the id of the song from request
+router.put("/all_courses/:id", async (req, res) => {
+    // first find the course and update the course the frontend wants us to update
+    // need to request the id of the course from request
     // and the find it in the database and update it
     try {
-        const song = req.body
-        await Song.updateOne({ _id: req.params.id }, song)
-        console.log(song)
+        const course = req.body
+        await Course.updateOne({ _id: req.params.id }, course)
+        console.log(course)
         res.sendStatus(204)
     } catch (err) {
         console.error("PUT error:", err)
@@ -66,10 +66,10 @@ router.post("/all_courses", async (req, res) => {
     }
 })
 
-// delete a song from db
-router.delete("/songs/:id", async (req, res) => {
+// delete a course from db
+router.delete("/all_courses/:id", async (req, res) => {
     try {
-        const result = await Song.deleteOne({ _id: req.params.id });
+        const result = await Course.deleteOne({ _id: req.params.id });
         if (result.deletedCount === 0) {
             res.sendStatus(404);
         } else {
@@ -80,7 +80,7 @@ router.delete("/songs/:id", async (req, res) => {
         res.status(400).send({ error: err.message });
     }
 });
-*/
+
 app.use("/api", router)
 console.log("Server is running on port 3000")
 app.listen(3000)
