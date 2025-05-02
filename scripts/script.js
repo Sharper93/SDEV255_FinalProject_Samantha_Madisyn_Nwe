@@ -14,18 +14,14 @@ async function loadCourses() {
 
           <div class="card-body">
             <h5 class="card-title text-success">${course.name}</h5>
-
             <h6 class="card-subtitle mb-2 text-muted">Major: ${course.focusedMajor}</h6>
-
             <p class="card-text">Instructor: ${course.instructor}</p>
-
             <p class="card-text">Credits: ${course.credits}</p>
 
             <button class="btn btn-outline-success mt-2" data-bs-toggle="modal" data-bs-target="#descModal"
               onclick="showDescription('${course.name}', \`${course.description}\`)">
               View Description
-            </button>
-            
+            </button>     
           </div>
 
         </div>
