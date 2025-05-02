@@ -51,6 +51,7 @@ router.post("/all_courses", async (req, res) => {
     }
 })
 
+
 router.put("/all_courses/:id", async (req, res) => {
     // first find the course and update the course the frontend wants us to update
     // need to request the id of the course from request
