@@ -1,5 +1,7 @@
-// event listener to add songs when DOM is triggered
-// triggered when page is loaded
+// event listener to add courses when DOM is triggered
+// triggered when page is loaded 
+
+// all courses appear on all_courses.html page
 
 document.addEventListener("DOMContentLoaded", async function() {
     const response = await fetch("http://localhost:3000/api/all_courses");
