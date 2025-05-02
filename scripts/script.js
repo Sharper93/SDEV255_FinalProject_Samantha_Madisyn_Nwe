@@ -2,17 +2,17 @@
 // triggered when page is loaded
 
 document.addEventListener("DOMContentLoaded", async function() {
-    const response = await fetch("http://localhost:3000/api/songs");
-    const songs = await response.json();
+    const response = await fetch("http://localhost:3000/api/all_courses");
+    const courses = await response.json();
 
     let html = "";
-    for (let song of songs) {
-        let songID = song._id
-        html += `<li>${song.title} - ${song.artist} - 
-        <a href="details.html?id=${songID}">Details</a> - 
-        <a href="edit.html?id=${songID}">Edit Song</a> - 
-        <a href="delete.html?id=${songID}">Delete Song</a></li>`;
+    for (let course of courses) {
+        let courseID = course._id
+        html += `<li>Course: ${course.name}  - Major: ${course.focuedMajor} - 
+        <a href="details.html?id=${courseID}">Course Details</a> - 
+        <a href="edit.html?id=${courseID}">Edit Course</a> - 
+        <a href="delete.html?id=${courseID}">Delete Course</a></li>`;
     }
 
-    document.querySelector("#list-of-songs").innerHTML = html;
+    document.querySelector("#list-of-courses").innerHTML = html;
 });

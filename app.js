@@ -1,9 +1,9 @@
 const express = require("express")
-const Song = require("./models/song")
+const Course = require("./models/course")
 var cors = require('cors')
 
 const app = express()
-app.use(cors())
+// app.use(cors())
 
 // Middleware that parses HTTP requests with JSON body
 app.use(express.json())
@@ -12,7 +12,7 @@ app.use(express.json())
 const router = express.Router()
 
 // get all songs in db
-router.get("/songs", async(req, res) => {
+/* router.get("/songs", async(req, res) => {
     try{
         const songs = await Song.find({})
         res.send(songs)
@@ -78,7 +78,7 @@ router.delete("/songs/:id", async (req, res) => {
         res.status(400).send({ error: err.message });
     }
 });
-
+*/
 app.use("/api", router)
 console.log("Server is running on port 3000")
 app.listen(3000)
