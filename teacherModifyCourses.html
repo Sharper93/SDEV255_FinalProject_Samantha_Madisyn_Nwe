@@ -23,7 +23,7 @@
                         <a class="nav-link" href="/all_courses.html">View Courses Available</a>
                     </li>
                     <li class="nav-item">
-                        <a class="btn btn-outline-light ms-2" href="/login.html">Login</a>
+                        <a id="logout" class="btn btn-outline-light ms-2" href="/login.html">Logout</a>
                     </li>
                 </ul>
             </div>
@@ -34,8 +34,12 @@
         <div class="container text-center">
             <h1 class="mb-5 text-center">Modify Course</h1>
 
-            <!--Same Form from add_courses-->
+            <!--Similar Form from add_courses-->
             <form>
+                <div>
+                    <label class="container text-center py-2" for="courseID">ID:</label>
+                    <input class="text-center" type="text" id="courseID">
+                </div>
                 <div>
                     <label class="container text-center py-2" for="name">Course Name:</label>
                     <input class="text-center"type="text" id="name">
@@ -49,25 +53,15 @@
                     <input type="text" id="description">
                 </div>
                 <div>
-                    <label class="container text-center py-2" for="instructor">Instructor Name:</label>
-                    <input type="text" id="instructor">
-                </div>
-                <div>
                     <label class="container text-center py-2" for="credits">Credits:</label>
                     <input type="number" id="credits"  min="1" max="4">
                 </div>
                 <div>
-                    <label class="container text-center py-2" for="date">Added on:</label>
-                    <input type="date" id="date">
-                </div>
-                <div>
                     <input type="button" id="updateBtn" value="Update Course" class="btn btn-light btn-md my-4 border border-success border-3 ">
                 </div>
-    
+
                 <div id="error"></div>
             </form>
-
-
             
 
             <a href="/teacherAddCourse.html" class="btn btn-success btn-lg">
