@@ -16,6 +16,8 @@ async function addCourse() {
         instructor: document.querySelector("#instructor").value,
         credits: document.querySelector("#credits").value,
         addedDate: document.querySelector("#date").value,   
+        // add username to show who created the course
+        teachUsername: localStorage.getItem("unameTeach")
        
      };
 

@@ -29,7 +29,7 @@ router.get("/all_courses", async(req, res) => {
 router.get("/all_courses/:id", async (req,res) => {
     try {
         const course = await Course.findById(req.params.id)
-        res.json(courses)
+        res.json(course)
     }
     catch (err) {
         res.status(400).send(err)
@@ -52,20 +52,31 @@ router.post("/all_courses", async (req, res) => {
 })
 
 
+
 router.put("/all_courses/:id", async (req, res) => {
     // first find the course and update the course the frontend wants us to update
     // need to request the id of the course from request
     // and the find it in the database and update it
     try {
-        const course = req.body
-        await Course.updateOne({ _id: req.params.id }, course)
-        console.log(course)
-        res.sendStatus(204)
-    } catch (err) {
-        console.error("PUT error:", err)
-        res.status(400).send({ error: err.message })
+        const updatedCourse = await Course.findByIdAndUpdate(
+            req.params.id, 
+            req.body, 
+            { new: true,
+            runValidators: true } // Ensure validation runs
+        );
+
+        if (!updatedCourse) {
+            return res.status(404).json({ error: "Course not found" });
+        }
+
+        console.log("Updated Course:", updatedCourse); // Debugging
+        res.status(200).json(updatedCourse);
+    } 
+    catch (err) {
+        console.error("PUT error:", err);
+        res.status(400).json({ error: err.message });
     }
-})
+});
 
 // delete a course from db
 router.delete("/all_courses/:id", async (req, res) => {

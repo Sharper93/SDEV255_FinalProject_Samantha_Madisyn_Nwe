@@ -1,13 +1,13 @@
-// models/course.js
 const mongoose = require("../db") // `db` is your mongoose connection
 
 const teacherSchema = new mongoose.Schema({
-    firstName: { type: String, required: true },
-    lastName: { type: String, required: true },
-    teachEmail: { type: String, required: true },
-    password: { type: String, required: true },
+  teacherFirstName: { type: String, required: true },
+  teacherLastName: { type: String, required: true },
+  teachUsername: { type: String, required: true },
+  teachPassword: { type: String, required: true },
+  teachStatus: String,
 })
 
 const Teacher = mongoose.model("Teacher", teacherSchema)
 
-module.exports = Teacher
+module.exports = Teacher;
