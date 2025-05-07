@@ -192,6 +192,57 @@ router.delete("/all_courses/:id", async (req, res) => {
     }
 });
 
+// Fetch user's schedule
+router.get("/user_schedule", async (req, res) => {
+    try {
+        const userId = "default_user"; // Replace with actual user ID logic
+        const schedule = await Schedule.findOne({ userId });
+
+        if (!schedule) {
+            return res.status(404).json([]);
+        }
+
+        res.json(schedule.courses);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to fetch schedule" });
+    }
+});
+
+// Add a course to the schedule
+app.post("/api/add_to_schedule", async (req, res) => {
+    try {
+        const { courseId, courseName, courseTime } = req.body;
+
+        if (!courseId || !courseName || !courseTime) {
+            return res.status(400).json({ error: "Missing required fields" });
+        }
+
+        const userId = "default_user"; // Replace with actual user ID logic
+        let schedule = await Schedule.findOne({ userId });
+
+        if (!schedule) {
+            schedule = new Schedule({ userId, courses: [] });
+        }
+
+        // Check if the course is already in the schedule
+        const courseExists = schedule.courses.some(course => course.courseId === courseId);
+        if (courseExists) {
+            return res.status(400).json({ error: "Course already in schedule" });
+        }
+
+        // Add the course
+        schedule.courses.push({ courseId, name: courseName, time: courseTime });
+        await schedule.save();
+
+        res.status(200).json({ message: "Course added to schedule" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to add course to schedule" });
+    }
+});
+
+
 app.use("/api", router)
 console.log("Server is running on port 3000")
 app.listen(3000)
