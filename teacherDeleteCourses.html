@@ -4,12 +4,15 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Modify Course</title>
+        <title>Delete Course</title>
         <!-- Bootstrap CSS -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
         <!-- Bootstrap Bundle JS -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="scripts/modify_course.js"></script>
+        <script src="scripts/delete_course.js"></script>
+        <script defer src="/scripts/teachAuth.js"></script>
+        <!-- call init after auth or it wont work-->
+        <script defer src="/scripts/teachInit.js"></script>
     </head>
 
     <body class="bg-light text-dark">
@@ -23,7 +26,7 @@
                         <a class="nav-link" href="/all_courses.html">View Courses Available</a>
                     </li>
                     <li class="nav-item">
-                        <a class="btn btn-outline-light ms-2" href="/login.html">Login</a>
+                        <a id="logout" class="btn btn-outline-light ms-2" href="/login.html">Logout</a>
                     </li>
                 </ul>
             </div>
@@ -34,41 +37,22 @@
         <div class="container text-center">
             <h1 class="mb-5 text-center">Delete Course</h1>
 
-            <!--Same Form from add_courses-->
+            <!--Similiar Form from add_courses-->
             <form>
+                <div>
+                    <label class="container text-center py-2" for="courseID">ID:</label>
+                    <input class="text-center" type="text" id="courseID">
+                </div>
                 <div>
                     <label class="container text-center py-2" for="name">Course Name:</label>
                     <input class="text-center"type="text" id="name">
                 </div>
                 <div>
-                    <label class="container text-center py-2" for="major">Major:</label>
-                    <input type="text" id="major">
+                    <input type="button" id="deleteBtn" value="Delete Course" class="btn btn-light btn-md my-4 border border-success border-3 " >
                 </div>
-                <div>
-                    <label class="container text-center py-2" for="description">Description:</label>
-                    <input type="text" id="description">
-                </div>
-                <div>
-                    <label class="container text-center py-2" for="instructor">Instructor Name:</label>
-                    <input type="text" id="instructor">
-                </div>
-                <div>
-                    <label class="container text-center py-2" for="credits">Credits:</label>
-                    <input type="number" id="credits"  min="1" max="4">
-                </div>
-                <div>
-                    <label class="container text-center py-2" for="date">Added on:</label>
-                    <input type="date" id="date">
-                </div>
-                <div>
-                    <input type="button" id="deleteBtn" value="Delete Course" class="btn btn-light btn-md my-4 border border-success border-3 ">
-                </div>
-    
                 <div id="error"></div>
             </form>
 
-
-            
 
             <a href="/teacherAddCourse.html" class="btn btn-success btn-lg">
                 Add a New Course
