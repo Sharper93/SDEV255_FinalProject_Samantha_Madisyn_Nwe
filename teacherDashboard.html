@@ -8,7 +8,10 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
         <!-- Bootstrap Bundle JS -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="scripts/teach_current_courses.js"></script>
+        <script defer src="/scripts/teachAuth.js"></script>
+        <!-- call init after auth or it wont work-->
+        <script defer src="/scripts/teachInit.js"></script>
+        
     </head>
 
     <body class="bg-light text-dark">
@@ -24,7 +27,7 @@
                     </li>
 
                     <li class="nav-item">
-                        <a class="btn btn-outline-light ms-2" href="/login.html">Login</a>
+                        <a id="logout" class="btn btn-outline-light ms-2" href="/login.html">Logout</a>
                     </li>
                 </ul>
 
@@ -35,7 +38,8 @@
         <!--Main Content-->
         <div class="container text-center">
 
-            <h1 class="mb-5 text-center">Welcome {} to Your Teacher Dashboard</h1>
+            <h1 id="welcomeMessage" class="mb-5 text-center">Welcome to Your Teacher Dashboard</h1>
+
             <h2 class="fs-3 fw-normal fst-italic">Current Courses</h2>
             <p>Below are your active courses.</p> 
 
@@ -45,11 +49,79 @@
                 </div>
             </div>
 
-            <p>If you would like to modify, delete, and/or add a new course, select the appropriate button.</p>
-
-            <a href="/teacherAddCourse.html" class="btn btn-success btn-lg">
+            <a href="/teacherAddCourse.html" class="btn btn-success btn-lg my-4">
                 Add New Course
             </a>
         </div>
+
+
+        <script>
+            // added script to bottom of body rather than calling a script page
+            // calling the script page loads it first and even with adding defer I could not get it to work properly
+            // This ensures page loads fully before running JavaScript
+            // then it shows the courses created by the current teach on dashboard
+            window.addEventListener("load", function() {
+                loadCourses();
+                updateWelcomeMessage();
+            });
+    
+            // Function to update welcome message with teacher's username
+            function updateWelcomeMessage() {
+                const teacherUsername = localStorage.getItem("unameTeach"); 
+                if (teacherUsername) {
+                    document.getElementById("welcomeMessage").textContent = `Welcome ${teacherUsername.toUpperCase()} to Your Teacher Dashboard`;
+                }
+            }
+    
+            // Function to load teacher's courses
+            async function loadCourses() {
+                const courseList = document.getElementById("list-of-courses");
+                const teacherUsername = localStorage.getItem("unameTeach");
+    
+                if (!teacherUsername) {
+                    console.error("Username not found in localStorage.");
+                    return;
+                }
+    
+                try {
+                    // review all courses from courses page
+                    const res = await fetch("http://localhost:3000/api/all_courses");
+                    const courses = await res.json();
+    
+                    // Filter courses to only show those created by the logged-in teacher
+                    const teacherCourses = courses.filter(course => course.teachUsername === teacherUsername);
+    
+                    console.log("Filtered Courses:", teacherCourses);
+    
+                    // Populate courses in the dashboard
+                    courseList.innerHTML = teacherCourses.map(course => `
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100 border border-success">
+                                <div class="card-body">
+                                    <h5 class="card-title text-success">${course.name}</h5>
+                                    <h6 class="card-subtitle mb-2 text-muted">Description: ${course.description}</h6>
+
+                                    <!-- Modify Course Button -->
+                                    <a href="/teacherModifyCourses.html?id=${course._id}" class="btn btn-light btn-md my-4 border border-success border-3 ">
+                                        Modify Course
+                                    </a>
+
+                                    <!-- Delete Course Button (Redirects to deleteCourse.html with course ID) -->
+                                    <a href="/teacherDeleteCourses.html?id=${course._id}" class="btn btn-light btn-md my-4 border border-success border-3 btn btn-danger">
+                                        Delete Course
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    `).join("");
+    
+                } 
+                catch (err) {
+                    console.error("Error fetching courses:", err);
+                    courseList.innerHTML = `<p class="text-danger">Failed to load courses.</p>`;
+                }
+            }
+        </script>
+        
     </body>
 </html>

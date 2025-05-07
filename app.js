@@ -1,8 +1,13 @@
 //app.js ALL CRUD statements
-
 const express = require("express")
 const Course = require("./models/course")
 var cors = require('cors')
+
+// for login
+
+const bodyParser = require('body-parser')
+const jwt = require('jwt-simple')
+const teacher = require('./models/teachers')
 
 const app = express()
 app.use(cors())
@@ -12,6 +17,101 @@ app.use(express.json())
 
 // route 
 const router = express.Router()
+
+//login authen 
+const secret = "supersecret"
+app.use("/api", router)
+
+const Teacher = require("./models/teachers");
+
+// creating a teacher user
+router.post("/teacher", async (req, res) => {
+    if(!req.body.teachUsername || !req.body.teachPassword) {
+        return res.status(400).json({ error: "Username and password are required." });
+    }
+
+    const newTeacher = await new Teacher({
+        teacherFirstName: req.body.teacherFirstName,
+        teacherLastName: req.body.teacherLastName,
+        teachUsername: req.body.teachUsername,
+        teachPassword: req.body.teachPassword,
+    })
+
+    try{
+        await newTeacher.save()
+        res.status(201).json({ message: "Teacher created successfully!", teacher: newTeacher }) // created teacher
+
+    }
+    catch (err) {
+        console.log(err)
+    }
+})
+
+//route to authenticate or log in teacher user 
+//post request - when you log in you create a new 'session' for teacher
+router.post("/teachAuth", async(req,res) => {
+    if(!req.body.teachUsername || !req.body.teachPassword){
+        res.status(400).json({error: "Missing username or password!"});
+        return 
+    }
+    // try to find username in db, then see if it matches with key:value of username:teachPassword
+    // await finding a teacher
+
+    let teacher = await Teacher.findOne({teachUsername : req.body.teachUsername})
+
+
+    // connection or server error
+    if(!teacher){
+            res.status(401).json({error : "Bad Username"})
+        }
+        // check to see if the password matches
+        else{
+            if(teacher.teachPassword != req.body.teachPassword){
+                res.status(401).json({error: "Bad Password"})
+            }
+            else{
+                // successful password
+                // create token that is encode with jwt library 
+                // send back the username
+                // also send back as part of token that you are currently authorized - boolean or num value 
+                // i.e. if auth - 0 you are not authorized if auth = 1 you are authorized
+                username2 = teacher.teachUsername
+                const token = jwt.encode({teachUsername: teacher.teachUsername}, secret)
+                // token is username and .secret is encoding the username
+                const auth = 1
+                // respond with the token
+
+                res.json({
+                    username2, 
+                    token: token, 
+                    auth: auth
+                })
+            }
+        }
+    })
+
+// check status of teacher with a valid token, see if it matches the frontend token
+router.get("/status", async (req, res) => {
+    if(!req.headers["x-auth"]){
+        return res.status(401).json({error: "Missing X-Auth"})
+    }
+
+    // if x-auth contains the token (it should)
+    const token = req.headers("x-auth")
+    try {
+        const decoded = jwt.decode(token,secret)
+
+        //send back all username and status fields to user/frontend
+        let teachers = Teacher.find({}, "username status")
+        res.json(teachers)
+    }
+    catch(ex){
+        res.status(401).json({error: "invalid jwt"})
+    }
+})
+
+
+
 
 //get all courses in db
 router.get("/all_courses", async(req, res) => {
@@ -50,7 +150,6 @@ router.post("/all_courses", async (req, res) => {
         res.status(400).send({ error: err.message })
     }
 })
-
 
 
 router.put("/all_courses/:id", async (req, res) => {
