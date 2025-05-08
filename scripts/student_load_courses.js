@@ -26,7 +26,6 @@ async function displayCourses() {
                     <div class="card-body">
                         <h5 class="card-title text-success">${course.name}</h5>
                         <h6 class="card-subtitle mb-2 text-muted">Major: ${course.focusedMajor}</h6>
-                        <p class="card-text">Instructor: ${course.instructor}</p>
                         <p class="card-text">Credits: ${course.credits}</p>
                         <button class="btn btn-outline-success mt-2" onclick="showDescription('${course.name}', \`${course.description}\`)">
                             View Description
@@ -51,14 +50,14 @@ function showDescription(name, description) {
 }
 
 // Add course to the schedule
-async function addToSchedule(courseId, courseName, courseTime) {
+async function addToSchedule(courseID, courseName, courseTime) {
     try {
         const response = await fetch("http://localhost:3000/api/add_to_schedule", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ courseId, courseName, courseTime })
+            body: JSON.stringify({ courseID, courseName, courseTime })
         });
 
         if (!response.ok) {
