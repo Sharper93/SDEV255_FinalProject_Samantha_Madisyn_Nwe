@@ -1,8 +1,9 @@
 document.addEventListener("DOMContentLoaded", function () {
     const teacherFields = document.getElementById("teacherFields");
+    const studentFields = document.getElementById("studentFields"); // added student fields
     const registerBtn = document.getElementById("registerBtn");
     const teacherBtn = document.getElementById("teacherBtn");
-    // const studentBtn = document.getElementById("studentBtn");
+    const studentBtn = document.getElementById("studentBtn"); // added student button
     
     let userType = "teacher"; // Default selection
 
@@ -10,34 +11,43 @@ document.addEventListener("DOMContentLoaded", function () {
     teacherBtn.addEventListener("click", function () {
         userType = "teacher";
         teacherFields.style.display = "block";
+        studentFields.style.display = "none"; // do not show student when selection is teacher
         teacherBtn.classList.add("active");
         studentBtn.classList.remove("active");
     });
 
-    /*studentBtn.addEventListener("click", function () {
+    studentBtn.addEventListener("click", function () {
         userType = "student";
         teacherFields.style.display = "none";
+        studentFields.style.display = "block";
         studentBtn.classList.add("active");
         teacherBtn.classList.remove("active");
-    });*/
+    });
 
     // Register the user
     registerBtn.addEventListener("click", async function () {
-        // teacher fields
-        const data = {
-            teachUsername: document.getElementById("username").value,
-            teachPassword: document.getElementById("password").value
-        };
-        
 
+        let data = {}; // empty until determined if it is a student or teacher 
+    
+        // teacher fields
         // If user is a teacher add following fields
         if (userType === "teacher") {
-            data.teacherFirstName = document.getElementById("teacherFirstName").value;
-            data.teacherLastName = document.getElementById("teacherLastName").value;
-        }
-        else {
-            data.teacherFirstName = document.getElementById("teacherFirstName").value;
-            data.teacherLastName = document.getElementById("teacherLastName").value;
+            data = {
+                teacherFirstName: document.getElementById("teacherFirstName").value,
+                teacherLastName: document.getElementById("teacherLastName").value,
+                teachUsername: document.getElementById("username").value,
+                teachPassword: document.getElementById("password").value
+            };
+            endpoint = "/api/teacher";
+            // if user is a teacher the following fields
+        } else if (userType === "student") {
+            data = {
+                firstName: document.getElementById("studentFirstName").value,
+                lastName: document.getElementById("studentLastName").value,
+                studentEmail: document.getElementById("studentEmail").value, //email id
+                password: document.getElementById("studentPassword").value //student
+            };
+            endpoint = "/api/student";
         }
 
         try {
@@ -48,14 +58,17 @@ document.addEventListener("DOMContentLoaded", function () {
             });
 
             const result = await response.json();
-            if (response.ok) {
-                document.getElementById("message").innerHTML = `<p class="text-success">Account created successfully!</p>`;
-            } else {
-                document.getElementById("message").innerHTML = `<p class="text-danger">${result.error}</p>`;
+            if (!response.ok) {
+                document.getElementById("message").textContent = result.error || "Registration failed.";
+            } 
+            else {
+                alert(result.message);
+                window.location.href = "/login.html";
             }
-        } catch (error) {
-            console.error("Error:", error);
-            document.getElementById("message").innerHTML = `<p class="text-danger">Server error. Please try again.</p>`;
+        } 
+        catch (err) {
+            console.error("Registration error:", err);
+            document.getElementById("message").textContent = "Server error during registration.";
         }
     });
 });

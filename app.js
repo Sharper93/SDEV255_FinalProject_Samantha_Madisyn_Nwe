@@ -26,26 +26,45 @@ const Teacher = require("./models/teachers");
 
 // creating a teacher user
 router.post("/teacher", async (req, res) => {
-    if(!req.body.teachUsername || !req.body.teachPassword) {
-        return res.status(400).json({ error: "Username and password are required." });
+    const { teacherFirstName, teacherLastName, teachUsername, teachPassword } = req.body;
+
+    if (!teacherFirstName || !teacherLastName || !teachUsername || !teachPassword) {
+        return res.status(400).json({ error: "All fields are required for teacher." });
     }
 
-    const newTeacher = await new Teacher({
-        teacherFirstName: req.body.teacherFirstName,
-        teacherLastName: req.body.teacherLastName,
-        teachUsername: req.body.teachUsername,
-        teachPassword: req.body.teachPassword,
-    })
+    const teacher = new Teacher({ teacherFirstName, teacherLastName, teachUsername, teachPassword });
 
-    try{
-        await newTeacher.save()
-        res.status(201).json({ message: "Teacher created successfully!", teacher: newTeacher }) // created teacher
-
+    try {
+        await teacher.save();
+        res.status(201).json({ message: "Teacher registered successfully!", teacher });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to register teacher." });
     }
+});
+
+
+const Student = require("./models/student");
+
+router.post("/student", async (req, res) => {
+    const { firstName, lastName, studentEmail, password } = req.body;
+
+    if (!firstName || !lastName || !studentEmail || !password) {
+        return res.status(400).json({ error: "All fields are required for student." });
+    }
+
+    const student = new Student({ firstName, lastName, studentEmail, password });
+
+    try {
+        await student.save();
+        res.status(201).json({ message: "Student registered successfully!", student });
+    } 
     catch (err) {
-        console.log(err)
+        console.error(err);
+        res.status(500).json({ error: "Failed to register student." });
     }
-})
+});
+
 
 //route to authenticate or log in teacher user 
 //post request - when you log in you create a new 'session' for teacher
@@ -89,6 +108,32 @@ router.post("/teachAuth", async(req,res) => {
             }
         }
     })
+
+    router.post("/studentAuth", async (req, res) => {
+        const { studentEmail, password } = req.body;
+    
+        if (!studentEmail || !password) {
+            return res.status(400).json({ error: "Missing email or password." });
+        }
+    
+        const student = await Student.findOne({ studentEmail });
+    
+        if (!student) {
+            return res.status(401).json({ error: "Invalid email." });
+        }
+    
+        if (student.password !== password) {
+            return res.status(401).json({ error: "Invalid password." });
+        }
+    
+        const token = jwt.encode({ studentEmail }, secret);
+        res.json({
+            studentEmail,
+            token,
+            auth: 1
+        });
+    });
+    
 
 // check status of teacher with a valid token, see if it matches the frontend token
 router.get("/status", async (req, res) => {
