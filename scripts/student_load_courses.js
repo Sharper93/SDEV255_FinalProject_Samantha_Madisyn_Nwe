@@ -30,7 +30,7 @@ async function displayCourses() {
                         <button class="btn btn-outline-success mt-2" onclick="showDescription('${course.name}', \`${course.description}\`)">
                             View Description
                         </button>
-                        <button class="btn btn-success mt-2" onclick="addToSchedule('${course._id}', '${course.name}', '${course.time}')">
+                        <button class="btn btn-success mt-2" onclick="addToSchedule('${course._id}', '${course.name}')">
                             Add to Schedule
                         </button>
                     </div>
