@@ -22,7 +22,6 @@ async function fetchSchedule() {
                 <div class="card h-100 border border-success">
                     <div class="card-body">
                         <h5 class="card-title text-success">${course.name}</h5>
-                        <p class="card-text">Time: ${course.time}</p>
                     </div>
                 </div>
             </div>

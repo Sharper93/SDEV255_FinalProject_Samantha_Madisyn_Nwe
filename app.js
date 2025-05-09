@@ -255,11 +255,11 @@ router.get("/user_schedule", async (req, res) => {
 });
 
 // Add a course to the schedule
-app.post("/api/add_to_schedule", async (req, res) => {
+router.post("/api/add_to_schedule", async (req, res) => {
     try {
-        const { courseId, courseName, courseTime } = req.body;
+        const { courseId, courseName } = req.body;
 
-        if (!courseId || !courseName || !courseTime) {
+        if (!courseId || !courseName ) {
             return res.status(400).json({ error: "Missing required fields" });
         }
 
@@ -277,7 +277,7 @@ app.post("/api/add_to_schedule", async (req, res) => {
         }
 
         // Add the course
-        schedule.courses.push({ courseId, name: courseName, time: courseTime });
+        schedule.courses.push({ courseId, name: courseName });
         await schedule.save();
 
         res.status(200).json({ message: "Course added to schedule" });
