@@ -50,14 +50,14 @@ function showDescription(name, description) {
 }
 
 // Add course to the schedule
-async function addToSchedule(courseID, courseName, courseTime) {
+async function addToSchedule(courseId, courseName) {
     try {
         const response = await fetch("http://localhost:3000/api/add_to_schedule", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ courseID, courseName, courseTime })
+            body: JSON.stringify({ courseId, courseName })
         });
 
         if (!response.ok) {
