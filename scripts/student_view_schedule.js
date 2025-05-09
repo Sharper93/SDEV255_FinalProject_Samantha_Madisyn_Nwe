@@ -1,34 +1,61 @@
-// Fetch and display the user's schedule
-document.addEventListener("DOMContentLoaded", fetchSchedule);
+document.addEventListener("DOMContentLoaded", loadSchedule);
 
-async function fetchSchedule() {
-    const scheduleList = document.getElementById("schedule-list");
+async function loadSchedule() {
+    const studentEmail = localStorage.getItem("unameStudent");
+    const scheduleContainer = document.getElementById("list-of-courses");
 
-    if (!scheduleList) {
-        console.error("Element with ID 'schedule-list' not found.");
-        return;
-    }
+    console.log("Loaded studentEmail from localStorage:", studentEmail);
+
+    if (!studentEmail || !scheduleContainer) return;
 
     try {
-        const response = await fetch("http://localhost:3000/api/user_schedule");
+        console.log("Fetching schedule for:", studentEmail);
+        const res = await fetch(`http://localhost:3000/api/student_schedule?email=${studentEmail}`);
+        console.log("API Response Status:", res.status);
 
-        if (!response.ok) {
-            throw new Error("Failed to fetch schedule.");
-        }
+        const schedule = await res.json();
+        console.log("Schedule data:", schedule);
 
-        const schedule = await response.json();
-        scheduleList.innerHTML = schedule.map(course => `
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 border border-success">
-                    <div class="card-body">
-                        <h5 class="card-title text-success">${course.name}</h5>
-                    </div>
+        if (!Array.isArray(schedule)) throw new Error("Invalid data");
+
+        scheduleContainer.innerHTML = schedule.map(course => `
+            <div class="card my-3" id="course-${course._id}">
+                <div class="card-body">
+                    <h5 class="card-title">${course.courseName}</h5>
+                    <button class="btn btn-danger" onclick="removeCourse('${course._id}', '${course.courseName}')">
+                        Remove from Schedule
+                    </button>
                 </div>
             </div>
         `).join("");
-        
+
     } catch (err) {
-        console.error("Error fetching schedule:", err);
-        scheduleList.innerHTML = `<p class="text-danger">Failed to load schedule. Please try again later.</p>`;
+        scheduleContainer.innerHTML = `<p class="text-danger">Failed to load schedule.</p>`;
+        console.error("Schedule load error:", err);
+    }
+}
+
+async function removeCourse(scheduleID, courseName) {
+    console.log("Schedule ID to remove:", scheduleID);
+
+    try {
+        const response = await fetch(`http://localhost:3000/api/student_schedule/${scheduleID}`, {
+            method: "DELETE",
+        });
+
+        if (!response.ok) {
+            let errorMessage = await response.text();
+            throw new Error(errorMessage);
+        }
+
+        alert(`Removed Course: ${courseName}`);
+        const courseElement = document.getElementById(`course-${scheduleID}`);
+        if (courseElement) {
+            courseElement.remove();
+        }
+
+    } catch (error) {
+        console.error("Error deleting course:", error.message);
+        alert(`Cannot remove course: ${error.message}`);
     }
 }
