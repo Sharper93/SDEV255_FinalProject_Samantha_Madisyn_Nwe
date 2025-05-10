@@ -34,7 +34,7 @@ async function login(studentEmail, password) {  // changed to studentEmail as st
 
         //saveit
         localStorage.setItem("token", token)
-        localStorage.setItem("unameStudent", unameStudent) // changed to studentEmail as student login doesnt have username variable sh
+        localStorage.setItem("unameStudent", unameStudent) 
         localStorage.setItem("auth", auth)
 
         // redirect user 

@@ -1,17 +1,13 @@
 //app.js ALL CRUD statements
 const express = require("express")
-const Course = require("./models/course")
-var cors = require('cors')
-
 // for login
-
 const bodyParser = require('body-parser')
 const jwt = require('jwt-simple')
-const teacher = require('./models/teachers')
-
 const app = express()
-app.use(cors())
+const mongoose = require("mongoose");
 
+var cors = require('cors')
+app.use(cors())
 // Middleware that parses HTTP requests with JSON body
 app.use(express.json())
 
@@ -21,7 +17,8 @@ const router = express.Router()
 //login authen 
 const secret = "supersecret"
 app.use("/api", router)
-
+const Course = require("./models/course")
+const Schedule = require("./models/schedule");
 const Teacher = require("./models/teachers");
 
 // creating a teacher user
@@ -133,7 +130,71 @@ router.post("/teachAuth", async(req,res) => {
             auth: 1
         });
     });
-    
+
+
+// add courses to schedule
+router.post("/add_to_schedule", async (req, res) => {
+    const { studentEmail, courseId, courseName } = req.body;
+
+    if (!studentEmail || !courseId || !courseName) {
+        return res.status(400).json({ error: "Missing required fields." });
+    }
+
+    try {
+        // Prevent duplicates (same student, same course)
+        const existing = await Schedule.findOne({ studentEmail, courseId });
+        if (existing) {
+            return res.status(409).json({ error: "Course already added to schedule." });
+        }
+
+        const scheduleItem = new Schedule({
+            studentEmail,
+            courseId,
+            courseName,
+        });
+
+        await scheduleItem.save();
+        res.status(201).json({ message: "Course added to schedule!", scheduleItem });
+    } catch (err) {
+        console.error("Failed to add to schedule:", err);
+        res.status(500).json({ error: "Internal server error." });
+    }
+});
+
+// display schedule saved on db for student by their email
+app.get("/api/student_schedule", async (req, res) => {
+    const studentEmail = req.query.email;
+    if (!studentEmail) return res.status(400).json({ error: "Missing student email" });
+
+    try {
+        const schedule = await Schedule.find({ studentEmail }); 
+        res.json(schedule);
+    } catch (err) {
+        res.status(500).json({ error: "Failed to retrieve schedule" });
+    }
+});
+
+
+// DELETE route to remove a course from schedule
+router.delete("/student_schedule/:id", async (req, res) => {
+    console.log("Received DELETE request for schedule ID:", req.params.id);
+    try {
+        // Find by _id instead of courseId
+        const result = await Schedule.deleteOne({ _id: req.params.id });
+
+        if (result.deletedCount === 0) {
+            console.log("Schedule item not found during deletion.");
+            return res.status(404).json({ error: "Schedule item not found" });
+        }
+
+        console.log("Successfully deleted schedule item.");
+        res.sendStatus(204);  // Successfully deleted
+    } catch (err) {
+        console.error("Error during deletion:", err);
+        res.status(500).json({ error: "Failed to delete schedule item" });
+    }
+});
+
 
 // check status of teacher with a valid token, see if it matches the frontend token
 router.get("/status", async (req, res) => {
@@ -236,57 +297,6 @@ router.delete("/all_courses/:id", async (req, res) => {
         res.status(400).send({ error: err.message });
     }
 });
-
-// Fetch user's schedule
-router.get("/user_schedule", async (req, res) => {
-    try {
-        const userId = "default_user"; // Replace with actual user ID logic
-        const schedule = await Schedule.findOne({ userId });
-
-        if (!schedule) {
-            return res.status(404).json([]);
-        }
-
-        res.json(schedule.courses);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: "Failed to fetch schedule" });
-    }
-});
-
-// Add a course to the schedule
-router.post("/api/add_to_schedule", async (req, res) => {
-    try {
-        const { courseId, courseName } = req.body;
-
-        if (!courseId || !courseName ) {
-            return res.status(400).json({ error: "Missing required fields" });
-        }
-
-        const userId = "default_user"; // Replace with actual user ID logic
-        let schedule = await Schedule.findOne({ userId });
-
-        if (!schedule) {
-            schedule = new Schedule({ userId, courses: [] });
-        }
-
-        // Check if the course is already in the schedule
-        const courseExists = schedule.courses.some(course => course.courseId === courseId);
-        if (courseExists) {
-            return res.status(400).json({ error: "Course already in schedule" });
-        }
-
-        // Add the course
-        schedule.courses.push({ courseId, name: courseName });
-        await schedule.save();
-
-        res.status(200).json({ message: "Course added to schedule" });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: "Failed to add course to schedule" });
-    }
-});
-
 
 app.use("/api", router)
 console.log("Server is running on port 3000")

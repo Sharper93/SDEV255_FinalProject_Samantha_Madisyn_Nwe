@@ -30,7 +30,7 @@ async function displayCourses() {
                         <button class="btn btn-outline-success mt-2" onclick="showDescription('${course.name}', \`${course.description}\`)">
                             View Description
                         </button>
-                        <button class="btn btn-success mt-2" onclick="addToSchedule('${course._id}', '${course.name}', '${course.time}')">
+                        <button class="btn btn-success mt-2" onclick="addToSchedule('${course._id}', '${course.name}')">
                             Add to Schedule
                         </button>
                     </div>
@@ -50,23 +50,38 @@ function showDescription(name, description) {
 }
 
 // Add course to the schedule
-async function addToSchedule(courseId, courseName) {
+async function addToSchedule(courseId, courseName, time) {
+    const studentEmail = localStorage.getItem("unameStudent"); // Store this on login
+
+    if (!studentEmail) {
+        console.log("LocalStorage unameStudent:", localStorage.getItem("unameStudent"));
+        alert("You must be logged in to add courses to your schedule.");
+        return;
+    }
+
     try {
         const response = await fetch("http://localhost:3000/api/add_to_schedule", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ courseId, courseName })
+            body: JSON.stringify({ studentEmail, courseId, courseName, time })
         });
 
         if (!response.ok) {
-            throw new Error("Failed to add course to schedule.");
+            if (response.status === 409) {
+                alert(`You have already added "${courseName}" to your schedule.`);
+            } else {
+                throw new Error("Failed to add course to schedule.");
+            }
+        } else {
+            alert(`Course "${courseName}" added to your schedule successfully!`);
         }
 
-        alert(`Course "${courseName}" added to your schedule successfully!`);
+        
     } catch (err) {
         console.error("Error adding course to schedule:", err);
         alert("Failed to add course to schedule. Please try again.");
     }
 }
+
